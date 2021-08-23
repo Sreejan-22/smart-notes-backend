@@ -1,6 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-require("dotenv").config();
+const authRoutes = require("./routes/authRoutes");
 
 /*
 if (process.env.NODE_ENV !== 'production') {
@@ -11,8 +12,9 @@ const app = express();
 const port = 8000;
 
 // middleware
-app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.json()); // takes any json data that comes along with the request and parses the data into javascript objects so that we can access from the request body itself
+
+// app.use(express.urlencoded());
 
 const dbName = "smart-notes";
 const dbURI = `mongodb+srv://smartAdmin:${process.env.MONGODB_PASSWORD}@cluster0.ozfi3.mongodb.net/${dbName}?retryWrites=true&w=majority`;
@@ -30,3 +32,5 @@ mongoose
     });
   })
   .catch((err) => console.log(err));
+
+app.use(authRoutes);
