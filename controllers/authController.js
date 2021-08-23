@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 const handleError = (err) => {
   // there can be 2 types of error:
@@ -34,12 +35,21 @@ module.exports.signup = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.create({ email, password });
+    // hash the password using bcrypt
+    const saltRounds = 10;
+    // const salt = await bcrypt.genSalt(saltRounds);
+    // auto-gen a salt and hash
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const user = await User.create({ email, password: hashedPassword });
     res.status(201).json(user);
   } catch (err) {
     // send the error as response and test it in postman to observe the error object; identify the required fields
     const errors = handleError(err);
-    res.status(400).json({ errors });
+    if (errors.email === "" && errors.password === "") {
+      res.status(500).send("internal server error");
+    } else {
+      res.status(400).json({ errors });
+    }
   }
 };
 
