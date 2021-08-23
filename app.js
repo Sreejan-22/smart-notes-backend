@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 */
 const app = express();
-const port = 8000;
+const port = 3000;
 
 // middleware
 app.use(express.json()); // takes any json data that comes along with the request and parses the data into javascript objects so that we can access from the request body itself
