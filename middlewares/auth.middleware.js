@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 const requireAuth = (req, res, next) => {
   // get the token if it exists and is verified
   const token = req.cookies.jwt;
-  console.log(token);
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
       if (err) {
         console.log(err.message);
         res.status(401).send("Unauthorized Route! Redirect to Login");
+        return;
       } else {
         console.log(decodedToken);
         next();
@@ -17,6 +17,7 @@ const requireAuth = (req, res, next) => {
     });
   } else {
     res.status(401).send("Unauthorized Route! Redirect to Login");
+    return;
   }
   next();
 };

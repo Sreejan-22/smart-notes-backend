@@ -92,3 +92,9 @@ module.exports.login = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+
+module.exports.logout = async (req, res) => {
+  // cookie gets cleared and expires
+  res.cookie("jwt", "", { maxAge: 1 });
+  res.send("logged out");
+};
