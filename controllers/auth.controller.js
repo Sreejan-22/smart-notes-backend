@@ -1,5 +1,7 @@
-const User = require("../models/User");
+require("dotenv").config();
+const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const handleError = (err) => {
   // there can be 2 types of error:
@@ -31,6 +33,21 @@ const handleError = (err) => {
   return clientError;
 };
 
+const maxAge = 3 * 60 * 60 * 24; // 3 days
+
+const createToken = (id) => {
+  const payload = {
+    id,
+  };
+  const secret = process.env.JWT_SECRET;
+  const options = {
+    expiresIn: maxAge,
+  };
+  // headers are auto generated
+  const token = jwt.sign(payload, secret, options);
+  return token;
+};
+
 module.exports.signup = async (req, res) => {
   const { email, password } = req.body;
 
@@ -41,7 +58,9 @@ module.exports.signup = async (req, res) => {
     // auto-gen a salt and hash
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const user = await User.create({ email, password: hashedPassword });
-    res.status(201).json(user);
+    const token = createToken(user._id);
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * maxAge });
+    res.status(201).json({ id: user._id });
   } catch (err) {
     // send the error as response and test it in postman to observe the error object; identify the required fields
     const errors = handleError(err);
@@ -53,8 +72,23 @@ module.exports.signup = async (req, res) => {
   }
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = async (req, res) => {
   const { email, password } = req.body;
-  console.log("Login: " + email, password);
-  res.send("new login");
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const auth = await bcrypt.compare(password, user.password);
+      if (auth) {
+        const token = createToken(user._id);
+        res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * maxAge });
+        res.status(200).json({ user: user._id });
+      } else {
+        res.status(400).send("Incorrect password");
+      }
+    } else {
+      res.status(400).send("This email is not registered");
+    }
+  } catch (err) {
+    res.status(500).send("Internal server error");
+  }
 };
