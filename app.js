@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser"); // this package makes working with cookies in nodejs easier
+const { requireAuth } = require("./middlewares/auth.middleware");
 
 /*
 if (process.env.NODE_ENV !== 'production') {
@@ -35,6 +36,10 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+// routes
+app.get("/notes", requireAuth, (req, res) => {
+  res.status(200).send("notes");
+});
 app.use(authRoutes);
 
 // // cookies
