@@ -38,28 +38,6 @@ mongoose
 
 // routes
 app.get("/notes", requireAuth, (req, res) => {
-  res.status(200).send("notes");
+  res.status(200).json({ isLoggedIn: true, data: {} });
 });
 app.use(authRoutes);
-
-// // cookies
-// app.get("/set-cookies", (req, res) => {
-//   // res.setHeader("Set-cookie", "newUser=true");
-//   // when we send this response, this cookie will get registered in the browser
-
-//   // we can access a cookie method on the response object after invoking cookieParser
-//   res.cookie("newUser", true); // this is the same thing as => res.setHeader("Set-cookie", "newUser=true");
-//   res.cookie("isEmployee", true, {
-//     maxAge: 1000 * 60 * 60 * 24, // expiry time -> 24 hours
-//     httpOnly: true, // attribute to prevent access to cookie values via JavaScript using document.cookie;  helps mitigate cross-site scripting (XSS) attacks.
-//     // secure: true, // A cookie with the Secure attribute is sent to the server only with an encrypted request over the HTTPS protocol, never with unsecured HTTP (except on localhost)
-//   });
-//   res.send("you got the cookies");
-// });
-
-// app.get("/get-cookies", (req, res) => {
-//   const cookies = req.cookies;
-//   console.log(cookies);
-
-//   res.json(cookies);
-// });

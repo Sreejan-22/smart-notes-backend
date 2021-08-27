@@ -8,7 +8,7 @@ const requireAuth = (req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
       if (err) {
         console.log(err.message);
-        res.status(401).send("Unauthorized Route! Redirect to Login");
+        res.status(401).json({ isLoggedIn: false, data: null });
         return;
       } else {
         console.log(decodedToken);
@@ -16,7 +16,7 @@ const requireAuth = (req, res, next) => {
       }
     });
   } else {
-    res.status(401).send("Unauthorized Route! Redirect to Login");
+    res.status(401).json({ isLoggedIn: false, data: null });
     return;
   }
   next();
