@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
 
+function validatePassword(value) {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/g.test(
+    value
+  );
+}
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -14,7 +20,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter a password"],
     trim: true,
-    minlength: [6, "Minimum password length is 6"],
+    validate: [
+      validatePassword,
+      "Password must be at least 8 characters long(at least one lowercase letter, one uppercase letter, one digit and one special character)",
+    ],
   },
 });
 
