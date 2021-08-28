@@ -1,25 +1,29 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/user.model");
+
+const jwt_secret = process.env.JWT_SECRET;
 
 // this function will be used to check if the user is authorized to access a protected resource
-const requireAuth = (req, res, next) => {
-  // get the token if it exists and is verified
-  const token = req.cookies.jwt;
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-      if (err) {
-        console.log(err.message);
-        res.status(401).json({ isLoggedIn: false, data: null });
-        return;
-      } else {
-        console.log(decodedToken);
-        next();
-      }
-    });
-  } else {
-    res.status(401).json({ isLoggedIn: false, data: null });
-    return;
+const requireAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
+    const decodedToken = jwt.verify(token, jwt_secret);
+    const userId = decodedToken.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res
+        .status(401)
+        .json({ isLoggedIn: false, message: "Unauthorized access" });
+      return;
+    }
+
+    req.user = user;
+    next();
+  } catch (err) {
+    res.status(401).json({ isLoggedIn: false, message: "Unauthorized access" });
   }
-  next();
 };
 
 module.exports = { requireAuth };

@@ -1,7 +1,7 @@
 require("dotenv").config();
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const { createToken } = require("../utils/createToken");
 
 const handleError = (err) => {
   // there can be 2 types of error:
@@ -33,41 +33,30 @@ const handleError = (err) => {
   return clientError;
 };
 
-const maxAge = 3 * 60 * 60 * 24; // 3 days
-
-const createToken = (id) => {
-  const payload = {
-    id,
-  };
-  const secret = process.env.JWT_SECRET;
-  const options = {
-    expiresIn: maxAge,
-  };
-  // headers are auto generated
-  const token = jwt.sign(payload, secret, options);
-  return token;
-};
-
 module.exports.signup = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    const user = await User.create({ email, password });
+
     // hash the password using bcrypt
     const saltRounds = 10;
     // const salt = await bcrypt.genSalt(saltRounds);
     // auto-gen a salt and hash
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const user = await User.create({ email, password: hashedPassword });
+    user.password = await bcrypt.hash(user.password, saltRounds);
+    const newUser = await user.save();
+
+    // after a new account is created, the user is logged into the website
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * maxAge });
-    res.status(201).json({ id: user._id });
+    res.status(201).json({ status: "ok", user: newUser._id, token });
   } catch (err) {
-    // send the error as response and test it in postman to observe the error object; identify the required fields
     const errors = handleError(err);
     if (errors.email === "" && errors.password === "") {
-      res.status(500).send("internal server error");
+      res
+        .status(500)
+        .json({ status: "error", message: "Oops!! Something went wrong!" });
     } else {
-      res.status(400).json({ errors });
+      res.status(400).json({ status: "error", errors });
     }
   }
 };
@@ -80,21 +69,18 @@ module.exports.login = async (req, res) => {
       const auth = await bcrypt.compare(password, user.password);
       if (auth) {
         const token = createToken(user._id);
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * maxAge });
-        res.status(200).json({ user: user._id });
+        res.status(200).json({ status: "ok", user: user._id, token });
       } else {
-        res.status(400).send("Incorrect password");
+        res
+          .status(400)
+          .json({ status: "error", message: "Incorrect password" });
       }
     } else {
-      res.status(400).send("This email is not registered");
+      res
+        .status(400)
+        .json({ status: "error", message: "This email is not registered" });
     }
   } catch (err) {
-    res.status(500).send("Internal server error");
+    res.status(500).json({ status: "error", message: "Internal server error" });
   }
-};
-
-module.exports.logout = async (req, res) => {
-  // cookie gets cleared and expires
-  res.cookie("jwt", "", { maxAge: 1 });
-  res.send("logged out");
 };
