@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { signup, login, logout } = require("../controllers/auth.controller");
+const { signup, login } = require("../controllers/auth.controller");
 
 // creating a new instance of the Router
 const router = Router();

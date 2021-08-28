@@ -4,14 +4,6 @@ const bcrypt = require("bcrypt");
 const { createToken } = require("../utils/createToken");
 
 const handleError = (err) => {
-  // there can be 2 types of error:
-  // one: invalid user input e.g. mandatory field blank, email format invalid, etc
-  // second: duplicate input - when a user enters an already used email
-  // console.log("Error message: " + err.message);
-  // console.log("Error code: ", err.code);
-  // err.code is for errors related to "unique: true" property of email field of the User schema
-  // its mostly undefined for other kinds of errors
-
   const clientError = { email: "", password: "" };
   // this error object is to be sent to the frontend
   // the email peoperty gets populated if an error occurs in the email fields and same for password
