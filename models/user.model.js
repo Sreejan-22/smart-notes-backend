@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
-
-function validatePassword(value) {
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/g.test(
-    value
-  );
-}
+const { validatePassword } = require("../utils/validatePassword");
 
 const userSchema = new mongoose.Schema({
   email: {
