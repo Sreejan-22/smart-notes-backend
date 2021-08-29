@@ -25,7 +25,10 @@ module.exports.signup = async (req, res) => {
     if (errors.email === "" && errors.password === "") {
       res
         .status(500)
-        .json({ status: "error", message: "Oops!! Something went wrong!" });
+        .json({
+          status: "serverError",
+          message: "Oops!! Something went wrong!",
+        });
     } else {
       res.status(400).json({ status: "error", errors });
     }
