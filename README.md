@@ -1,5 +1,10 @@
 # smart-notes-backend
 
+Tech Stack
+
+- Express.js
+- Mongoose + MongoDB
+
 ## Routes
 
 | Route   | Request Method | description                 |
@@ -10,3 +15,5 @@
 | /notes  | POST           | create a new note           |
 | /notes  | PUT            | update a note               |
 | /notes  | DELETE         | delete a note               |
+
+Authentication has been implemented using JSON Web Token.
