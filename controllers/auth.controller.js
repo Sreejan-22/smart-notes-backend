@@ -23,12 +23,10 @@ module.exports.signup = async (req, res) => {
   } catch (err) {
     const errors = handleError(err);
     if (errors.email === "" && errors.password === "") {
-      res
-        .status(500)
-        .json({
-          status: "serverError",
-          message: "Oops!! Something went wrong!",
-        });
+      res.status(500).json({
+        status: "serverError",
+        message: "Oops!! Something went wrong!",
+      });
     } else {
       res.status(400).json({ status: "error", errors });
     }
@@ -55,6 +53,8 @@ module.exports.login = async (req, res) => {
         .json({ status: "error", message: "This email is not registered" });
     }
   } catch (err) {
-    res.status(500).json({ status: "error", message: "Internal server error" });
+    res
+      .status(500)
+      .json({ status: "serverError", message: "Internal server error" });
   }
 };

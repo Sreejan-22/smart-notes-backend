@@ -15,14 +15,22 @@ const requireAuth = async (req, res, next) => {
     if (!user) {
       res
         .status(401)
-        .json({ isLoggedIn: false, message: "Unauthorized access" });
+        .json({
+          status: "error",
+          isLoggedIn: false,
+          message: "Unauthorized access",
+        });
       return;
     }
 
     req.user = user;
     next();
   } catch (err) {
-    res.status(401).json({ isLoggedIn: false, message: "Unauthorized access" });
+    res.status(401).json({
+      status: "error",
+      isLoggedIn: false,
+      message: "Unauthorized access",
+    });
     return;
   }
 };

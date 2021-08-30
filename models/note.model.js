@@ -19,7 +19,7 @@ const noteSchema = new Schema({
         required: true,
         trim: true,
       },
-      noteType: {
+      category: {
         type: String,
         required: true,
       },

@@ -2,8 +2,10 @@ const Notes = require("../models/note.model");
 
 module.exports.getNotes = async (req, res) => {
   try {
-    const notes = await Notes.findOne({ email: req.user.email });
-    res.status(200).json({ isLoggedIn: true, notes });
+    const email = req.user.email;
+    const allNotes = await Notes.findOne({ email });
+    const notes = allNotes ? allNotes.notes : null;
+    res.status(200).json({ status: "ok", isLoggedIn: true, notes });
   } catch (err) {
     console.log(err);
     res.status(400).json({
@@ -16,21 +18,17 @@ module.exports.getNotes = async (req, res) => {
 
 module.exports.createNote = async (req, res) => {
   try {
-    const { title, details, type } = req.body;
+    const { title, details, category } = req.body;
     const email = req.user.email;
 
     // create a new note
-    const allNotes = await Notes.findOne({
-      email,
-    });
+    const allNotes = await Notes.findOne({ email });
     if (allNotes) {
       const notes = [...allNotes.notes];
-      notes.push({ title, details, noteType: type });
+      notes.push({ title, details, category });
       allNotes.notes = notes;
       await allNotes.save();
-      res
-        .status(201)
-        .json({ status: "ok", message: "new note created", notes: allNotes });
+      res.status(201).json({ status: "ok", message: "new note created" });
     } else {
       const noteData = {
         email,
@@ -38,14 +36,12 @@ module.exports.createNote = async (req, res) => {
           {
             title,
             details,
-            noteType: type,
+            category,
           },
         ],
       };
       const newNote = await Notes.create(noteData);
-      res
-        .status(201)
-        .json({ status: "ok", message: "new note created", notes: newNote });
+      res.status(201).json({ status: "ok", message: "new note created" });
     }
   } catch (err) {
     res.status(400).json({
@@ -65,9 +61,11 @@ module.exports.deleteNote = async (req, res) => {
     notes.splice(index, 1);
     allNotes.notes = notes;
     await allNotes.save();
-    res
-      .status(200)
-      .json({ status: "ok", message: "note deleted!!", newNotes: allNotes });
+    res.status(200).json({
+      status: "ok",
+      message: "note deleted!!",
+      updatedNotes: allNotes.notes,
+    });
   } catch (err) {
     console.log(err);
     res.status(400).json({
@@ -80,22 +78,22 @@ module.exports.deleteNote = async (req, res) => {
 
 module.exports.updateNote = async (req, res) => {
   try {
-    const { title, details, type } = req.body;
+    const { title, details, category } = req.body;
     const index = req.params.index;
     const email = req.user.email;
     const updatedData = {
       title,
       details,
-      noteType: type,
+      category,
     };
     const allNotes = await Notes.findOne({ email });
     allNotes.notes[index] = updatedData;
-
     await allNotes.save();
+
     res.status(200).json({
       status: "ok",
       message: "note updated!!",
-      updatedNote: allNotes.notes[index],
+      notes: allNotes.notes,
     });
   } catch (err) {
     console.log(err);
