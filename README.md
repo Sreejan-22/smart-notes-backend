@@ -1,5 +1,7 @@
 # smart-notes-backend
 
+The application is deployed here: https://smart-notes-backend.herokuapp.com/
+
 Tech Stack
 
 - Express.js
