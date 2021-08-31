@@ -24,9 +24,10 @@ app.use(express.json()); // takes any json data that comes along with the reques
 //   })
 // );
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // "*" means all origins; while in production put here the url of the frontend of the web app
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  // res.header("Access-Control-Allow-Origin", "*"); // "*" means all origins; while in production put here the url of the frontend of the web app
+  // res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  // res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.set("Access-Control-Allow-Origin", "*");
   next();
 });
 
