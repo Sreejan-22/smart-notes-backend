@@ -7,7 +7,6 @@ module.exports.getNotes = async (req, res) => {
     const notes = allNotes ? allNotes.notes : null;
     res.status(200).json({ status: "ok", isLoggedIn: true, notes });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       status: "error",
       message: "failed to fetch notes",
@@ -67,7 +66,6 @@ module.exports.deleteNote = async (req, res) => {
       updatedNotes: allNotes.notes,
     });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       status: "error",
       message: "failed to delete the note",
@@ -96,7 +94,6 @@ module.exports.updateNote = async (req, res) => {
       notes: allNotes.notes,
     });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       status: "error",
       message: "failed to update the note",
