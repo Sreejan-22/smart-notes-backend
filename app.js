@@ -32,7 +32,7 @@ app.use(cors());
 //   );
 //   next();
 // });
-
+const port = process.env.PORT;
 const dbURI = process.env.MONGO_URI;
 
 mongoose
@@ -44,7 +44,7 @@ mongoose
   })
   .then((result) => {
     app.listen(port, () => {
-      console.log(`App listening on port ${process.env.PORT}`);
+      console.log(`App listening on port ${port}`);
     });
   })
   .catch((err) => console.log(err));
