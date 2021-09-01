@@ -19,13 +19,13 @@ app.use(express.json()); // takes any json data that comes along with the reques
 // app.use(express.urlencoded());
 // app.use(cookieParser());
 app.use(cors());
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // "*" means all origins; while in production put here the url of the frontend of the web app
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  // res.set("Access-Control-Allow-Origin", "*");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*"); // "*" means all origins; while in production put here the url of the frontend of the web app
+//   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   // res.set("Access-Control-Allow-Origin", "*");
+//   next();
+// });
 
 const dbName = "smart-notes";
 const dbURI = `mongodb+srv://smartAdmin:${process.env.MONGODB_PASSWORD}@cluster0.ozfi3.mongodb.net/${dbName}?retryWrites=true&w=majority`;
