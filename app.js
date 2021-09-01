@@ -5,18 +5,9 @@ const authRoutes = require("./routes/auth.router");
 const notesRoutes = require("./routes/notes.router");
 const cors = require("cors");
 
-/*
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
-*/
 const app = express();
 
-// middleware
-app.use(express.json()); // takes any json data that comes along with the request and parses the data into javascript objects so that we can access from the request body itself
-
-// app.use(express.urlencoded());
-// app.use(cookieParser());
+app.use(express.json());
 app.use(cors());
 
 app.use(function (req, res, next) {
