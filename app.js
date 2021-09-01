@@ -11,7 +11,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 */
 const app = express();
-const port = 3000;
 
 // middleware
 app.use(express.json()); // takes any json data that comes along with the request and parses the data into javascript objects so that we can access from the request body itself
@@ -20,22 +19,21 @@ app.use(express.json()); // takes any json data that comes along with the reques
 // app.use(cookieParser());
 app.use(cors());
 
-app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+// app.use(function (req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
 
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  next();
-});
+//   res.header(
+//     "Access-Control-Allow-Methods",
+//     "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+//   );
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+//   );
+//   next();
+// });
 
-const dbName = "smart-notes";
-const dbURI = `mongodb+srv://smartAdmin:${process.env.MONGODB_PASSWORD}@cluster0.ozfi3.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+const dbURI = process.env.MONGO_URI;
 
 mongoose
   .connect(dbURI, {
@@ -46,7 +44,7 @@ mongoose
   })
   .then((result) => {
     app.listen(port, () => {
-      console.log(`App listening on port ${port}`);
+      console.log(`App listening on port ${process.env.PORT}`);
     });
   })
   .catch((err) => console.log(err));
