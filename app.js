@@ -19,19 +19,19 @@ app.use(express.json()); // takes any json data that comes along with the reques
 // app.use(cookieParser());
 app.use(cors());
 
-// app.use(function (req, res, next) {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
-//   res.header(
-//     "Access-Control-Allow-Methods",
-//     "GET,HEAD,OPTIONS,POST,PUT,DELETE"
-//   );
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-//   );
-//   next();
-// });
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  next();
+});
 const port = process.env.PORT;
 const dbURI = process.env.MONGO_URI;
 
